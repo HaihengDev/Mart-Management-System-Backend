@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.get('/users', async (req: Request, res: Response) => {
   try {
-    const [rows] = await pool.query<any[]>('SELECT * FROM tbStudent');
+    const [rows] = await pool.query<any[]>('SELECT * FROM Product');
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
