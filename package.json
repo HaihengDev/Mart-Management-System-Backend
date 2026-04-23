@@ -20,7 +20,8 @@
   "homepage": "https://github.com/HaihengDev/Mart-Management-System-Backend#readme",
   "dependencies": {
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mysql2": "^3.22.2"
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
