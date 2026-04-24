@@ -23,7 +23,12 @@ export const getProductById = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json(product);
-  } catch (error) {}
+  } catch (error: any) {
+    return res.status(500).json({
+      message: 'Server Error!',
+      Error: error,
+    });
+  }
 };
 
 export const createProduct = async (req: Request, res: Response) => {
@@ -41,11 +46,34 @@ export const createProduct = async (req: Request, res: Response) => {
       supplier_id,
     } = req.body;
 
-    const [row] = await pool.query<any[]>(
-      `INSERT INTO Product(product_name, product_image, barcode, price, cost_price, quantity_in_stock, expiry_date, status, category_id, supplier_id) VALUES (${product_name}, ${product_image}, ${barcode}, ${price}, ${cost_price}, ${quantity_in_stock}, ${expiry_date}, ${status}, ${category_id}, ${supplier_id});`,
+    if (!product_name || !price) {
+      return res.status(400).json({
+        message: 'Product Name and Price required!',
+      });
+    }
+
+    const [row]: any = await pool.query(
+      `INSERT INTO Product(product_name, product_image, barcode, price, cost_price, quantity_in_stock, expiry_date, status, category_id, supplier_id)
+      VALUES
+      (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        product_name,
+        product_image,
+        barcode,
+        price,
+        cost_price,
+        quantity_in_stock,
+        expiry_date,
+        status,
+        category_id,
+        supplier_id,
+      ],
     );
 
-    return res.status(200).json(row);
+    return res.status(201).json({
+      message: 'Product is created successfully!',
+      product_id: row.insert_id,
+    });
   } catch (error) {
     return res.status(500).json({
       message: error,
@@ -54,15 +82,22 @@ export const createProduct = async (req: Request, res: Response) => {
 };
 
 export const deleteProduct = async (req: Request, res: Response) => {
-  const { id } = await req.params;
-  const query = `DELETE Product Where id=${id}`;
+  try {
+    const { id } = await req.params;
+    const query = `DELETE Product Where id=${id}`;
 
-  const [row] = await pool.query<any[]>(query);
-  if (!row) {
-    return res.status(404).json({
-      message: 'Product is not found!',
+    const [row] = await pool.query<any[]>(query);
+    if (!row) {
+      return res.status(404).json({
+        message: 'Product is not found!',
+      });
+    }
+
+    return res.status(200).json(row);
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Server Error!',
+      Error: error,
     });
   }
-
-  return res.status(200).json(row);
 };
