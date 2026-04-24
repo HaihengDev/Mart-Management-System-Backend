@@ -25,3 +25,44 @@ export const getProductById = async (req: Request, res: Response) => {
     return res.status(200).json(product);
   } catch (error) {}
 };
+
+export const createProduct = async (req: Request, res: Response) => {
+  try {
+    const {
+      product_name,
+      product_image,
+      barcode,
+      price,
+      cost_price,
+      quantity_in_stock,
+      expiry_date,
+      status,
+      category_id,
+      supplier_id,
+    } = req.body;
+
+    const [row] = await pool.query<any[]>(
+      `INSERT INTO Product(product_name, product_image, barcode, price, cost_price, quantity_in_stock, expiry_date, status, category_id, supplier_id) VALUES (${product_name}, ${product_image}, ${barcode}, ${price}, ${cost_price}, ${quantity_in_stock}, ${expiry_date}, ${status}, ${category_id}, ${supplier_id});`,
+    );
+
+    return res.status(200).json(row);
+  } catch (error) {
+    return res.status(500).json({
+      message: error,
+    });
+  }
+};
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  const { id } = await req.params;
+  const query = `DELETE Product Where id=${id}`;
+
+  const [row] = await pool.query<any[]>(query);
+  if (!row) {
+    return res.status(404).json({
+      message: 'Product is not found!',
+    });
+  }
+
+  return res.status(200).json(row);
+};
