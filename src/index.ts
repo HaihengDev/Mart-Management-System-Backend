@@ -1,22 +1,13 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import { createServer } from 'http';
 import dotenv from 'dotenv';
-import pool from './config/db';
+import productRouter from './routes/productRoute';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-
-app.get('/users', async (req: Request, res: Response) => {
-  try {
-    const [rows] = await pool.query<any[]>('SELECT * FROM Product');
-    res.status(200).json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Database Error' });
-  }
-});
+app.use(productRouter);
 
 const PORT = process.env.PORT || 8888;
 const server = createServer(app);
