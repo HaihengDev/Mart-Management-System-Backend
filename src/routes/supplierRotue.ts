@@ -2,6 +2,6 @@ import express from 'express';
 import { getAllSupplier } from '../controllers/supplierController';
 
 const router = express.Router();
-router.get('/api/suppliers', getAllSupplier);
+router.get('/', getAllSupplier);
 
 export default router;

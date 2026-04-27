@@ -6,8 +6,8 @@ import {
 } from '../controllers/productController';
 
 const router = express.Router();
-router.get('/api/products', getAllProducts);
-router.get('/api/products/:id', getProductById);
-router.post('/api/products', createProduct);
+router.get('/', getAllProducts);
+router.get('/:id', getProductById);
+router.post('/', createProduct);
 
 export default router;

@@ -10,8 +10,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
-app.use(productRouter);
-app.use(supplierRouter);
+app.use('/api/products', productRouter);
+app.use('/api/suppliers', supplierRouter);
 
 const PORT = process.env.PORT || 8888;
 const server = createServer(app);
