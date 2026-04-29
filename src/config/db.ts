@@ -1,16 +1,19 @@
-import mysql from 'mysql2/promise';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: 'Mart_Management_System',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+const uri = process.env.MONGO_URI;
 
-export default pool;
+export const connectDB = async () => {
+  try {
+    if (!uri) {
+      throw new Error('MONGO_URI is not defined in .env file');
+    }
+
+    await mongoose.connect(uri);
+    console.log('MongoDB is connected!');
+  } catch (err) {
+    console.error('MongoDB connection failed:', err);
+    process.exit(1);
+  }
+};
