@@ -1,13 +1,16 @@
 import mongoose from 'mongoose';
-
 const productSchema = new mongoose.Schema(
   {
-    name: {
+    product_id: {
+      type: String,
+      required: true,
+    },
+    product_name: {
       type: String,
       required: true,
       trim: true,
     },
-    imgUrl: {
+    product_image: {
       type: String,
       required: true,
     },
@@ -24,8 +27,20 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    expiry_date: {
+      type: Date,
+      required: true
+    },
+    category_id: {
+      type: String,
+      required: true,
+    },
+    supplier_id: {
+      type: String,
+      required: true
+    }
   },
   { timestamps: true, collection: 'products' },
 );
 
-export default mongoose.model('Produc', productSchema);
+export default mongoose.model('Product', productSchema);

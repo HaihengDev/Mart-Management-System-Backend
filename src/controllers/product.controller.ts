@@ -24,20 +24,30 @@ export const createProduct = async (req: Request, res: Response) => {
     }
     const image = await uploadFile(file);
 
-    const { name, stock, discount, price } = req.body;
+    const { product_name, stock, discount, price, expiry_date } = req.body;
+    const {category_id, supplier_id} = req.body;
 
-    if (!name || !price) {
+    if (!product_name || price === undefined || !expiry_date) {
       return res.status(400).json({
-        message: 'Product name and price is required!',
+        message: 'Product name, expiry date and price is required!',
+      });
+    }
+
+    if(!category_id || !supplier_id) {
+      return res.status(400).json({
+        message: 'Product have to add to category and include supplier!',
       });
     }
 
     const product = await Product.create({
-      name,
-      imgUrl: image,
+      product_name,
+      product_image: image,
       stock,
       discount,
       price,
+      expiry_date,
+      category_id,
+      supplier_id,
     });
 
     return res.status(201).json({
