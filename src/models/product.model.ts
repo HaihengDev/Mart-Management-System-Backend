@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 const productSchema = new mongoose.Schema(
   {
     product_id: {
-      type: String,
+      type: Number,
+      unique: true,
       required: true,
     },
     product_name: {
@@ -29,16 +30,16 @@ const productSchema = new mongoose.Schema(
     },
     expiry_date: {
       type: Date,
-      required: true
+      required: true,
     },
     category_id: {
-      type: String,
+      type: Number,
       required: true,
     },
     supplier_id: {
-      type: String,
-      required: true
-    }
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true, collection: 'products' },
 );
