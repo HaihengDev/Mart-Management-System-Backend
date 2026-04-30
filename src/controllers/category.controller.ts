@@ -56,5 +56,55 @@ export const createCategory = async (req: Request, res: Response) => {
 
 export const updateCategory = async (req: Request, res: Response) => {
   try {
-  } catch (err: any) {}
+    const id = req.params.id as string;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: 'Object Id of category is invalid format!',
+      });
+    }
+
+    const { category_name } = req.body;
+
+    const categoryUpdated = await Category.findByIdAndUpdate(
+      id,
+      {
+        category_name,
+      },
+      { new: true },
+    );
+
+    return res.status(200).json({
+      message: 'Category is created successfully!',
+      categoryUpdated,
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      message: 'Server error',
+      result: err?.message,
+    });
+  }
+};
+
+export const deleteCategory = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: 'Mun request berk krob pnek merl instruction phg!',
+      });
+    }
+
+    await Category.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      message: 'Category is deleted successfully!',
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      message: 'Server error!',
+      result: err?.message,
+    });
+  }
 };
