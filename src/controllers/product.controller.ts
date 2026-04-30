@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { uploadFile } from '../services/uploadFile';
 import Product from '../models/product.model';
+import { convertUrlToKey } from '../utils/convertUrlToKey';
+import { deleteFile } from '../services/deleteFile';
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
@@ -93,6 +95,55 @@ export const createProduct = async (req: Request, res: Response) => {
     return res.status(201).json({
       message: 'Product is created successfully!',
       product,
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      message: 'Server error!',
+      result: err.message,
+    });
+  }
+};
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { product_id } = req.params;
+
+    if (!product_id) {
+      return res.status(400).json({
+        message: 'Product id is required for delete product!',
+      });
+    }
+
+    // 🔍 Find product first
+    const product = await Product.findOne({
+      product_id: Number(product_id),
+    });
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found!',
+      });
+    }
+
+    if (product.product_image) {
+      const key = convertUrlToKey(product.product_image);
+
+      if (key) {
+        try {
+          await deleteFile(key);
+        } catch (err) {
+          console.error('Failed to delete image:', err);
+        }
+      }
+    }
+
+    await Product.deleteOne({
+      product_id: Number(product_id),
+    });
+
+    return res.status(200).json({
+      message: 'Product deleted successfully!',
+      deletedProduct: product,
     });
   } catch (err: any) {
     return res.status(500).json({
