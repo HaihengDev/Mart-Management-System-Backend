@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import productRouter from './routes/product.route';
 import categoryRouter from './routes/category.route';
+import supplierRouter from './routes/supplier.route';
 import { connectDB } from './config/db';
 
 dotenv.config();
@@ -15,7 +16,7 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use('/api/products', productRouter);
 app.use('/api/categories', categoryRouter);
-
+app.use('/api/suppliers', supplierRouter);
 const PORT = process.env.PORT || 8888;
 const server = createServer(app);
 

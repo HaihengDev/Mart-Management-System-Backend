@@ -10,7 +10,7 @@ const supplierSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phnone: {
+    phone: {
       type: String,
       required: true,
     },
@@ -20,6 +20,7 @@ const supplierSchema = new mongoose.Schema(
     },
     address: {
       type: String,
+      required: true,
     },
   },
   { timestamps: true, collection: 'suppliers' },
