@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
 import { Request, Response } from 'express';
-import { uploadFile } from '../services/uploadFile';
+import { uploadFile, deleteFile, updateFile } from '../services/r2.services';
 import Product from '../models/product.model';
 import { convertUrlToKey } from '../utils/convertUrlToKey';
-import { deleteFile } from '../services/deleteFile';
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
@@ -182,6 +181,110 @@ export const deleteProduct = async (req: Request, res: Response) => {
     return res.status(500).json({
       message: 'Server error!',
       result: err.message,
+    });
+  }
+};
+
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: 'Object Id is invalid format!',
+      });
+    }
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product is not found!',
+      });
+    }
+
+    let image = product.product_image;
+    const file = req.file;
+
+    if (file) {
+      try {
+        if (product.product_image) {
+          const key = convertUrlToKey(product.product_image);
+          if (!key) {
+            return res.status(500).json({
+              message: 'Failed to parse existing product image key!',
+            });
+          }
+
+          image = await updateFile(key, file);
+        } else {
+          image = await uploadFile(file);
+        }
+      } catch (err: any) {
+        return res.status(500).json({
+          message: 'Failed to update product image!',
+          result: err?.message,
+        });
+      }
+    }
+
+    const {
+      product_id,
+      product_name,
+      stock,
+      price,
+      discount,
+      expiry_date,
+      category_id,
+      supplier_id,
+    } = req.body || {};
+
+    const updateData: Record<string, any> = {};
+
+    if (product_id !== undefined) updateData.product_id = product_id;
+    if (product_name !== undefined) updateData.product_name = product_name;
+    if (stock !== undefined) updateData.stock = stock;
+    if (price !== undefined) updateData.price = price;
+    if (discount !== undefined) updateData.discount = discount;
+    if (expiry_date !== undefined) updateData.expiry_date = expiry_date;
+    if (category_id !== undefined) updateData.category_id = category_id;
+    if (supplier_id !== undefined) updateData.supplier_id = supplier_id;
+
+    updateData.product_image = image;
+
+    const hasBodyUpdates = Object.keys(updateData).some(
+      (key) => key !== 'product_image',
+    );
+
+    if (!file && !hasBodyUpdates) {
+      return res.status(400).json({
+        message: 'No update data provided!',
+      });
+    }
+
+    const updatedProduct = await Product.findOneAndUpdate(
+      { _id: id },
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({
+        message: 'Product is not found!',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Product is updated successfully!',
+      data: updatedProduct,
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      message: 'Server error!',
+      result: err?.message,
     });
   }
 };

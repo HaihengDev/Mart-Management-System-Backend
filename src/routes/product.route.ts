@@ -4,6 +4,7 @@ import {
   deleteProduct,
   getAllProducts,
   getProductById,
+  updateProduct,
   viewProduct,
 } from '../controllers/product.controller';
 import { upload } from '../middleware/upload';
@@ -15,5 +16,6 @@ router.get('/', getProductById);
 router.get('/:id', viewProduct);
 router.post('/', upload.single('file'), createProduct);
 router.delete('/:product_id', deleteProduct);
+router.put('/:id', upload.single('file'), updateProduct);
 
 export default router;
