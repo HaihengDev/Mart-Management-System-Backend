@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import { uploadFile } from '../services/uploadFile';
 import Product from '../models/product.model';
@@ -50,6 +51,38 @@ export const getProductById = async (req: Request, res: Response) => {
     return res.status(500).json({
       message: 'Server error',
       result: err.message,
+    });
+  }
+};
+
+export const viewProduct = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params as { id: string };
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: 'Invalid ObjectId format!',
+      });
+    }
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(400).json({
+        message: 'Product is not found!',
+      });
+    }
+
+    await Product.updateOne({ _id: id }, { $inc: { views: 1 } });
+
+    return res.status(200).json({
+      message: 'Product found successfully',
+      product,
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      message: 'Server Error',
+      result: err?.message,
     });
   }
 };

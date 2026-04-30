@@ -28,6 +28,14 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    views: {
+      type: Number,
+      default: 0,
+    },
+    rating: {
+      type: Number,
+      default: 0,
+    },
     expiry_date: {
       type: Date,
       required: true,
