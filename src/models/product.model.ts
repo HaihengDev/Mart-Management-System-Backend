@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import Counter from './counter.model';
+
 const productSchema = new mongoose.Schema(
   {
     product_id: {
@@ -51,5 +53,21 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true, collection: 'products' },
 );
+
+productSchema.pre('save', async function () {
+  if (this.product_id) return;
+
+  const counter = await Counter.findOneAndUpdate(
+    {
+      name: 'product_id',
+    },
+    {
+      $inc: { seq: 1 },
+    },
+    { new: true, upsert: true },
+  );
+
+  this.product_id = counter.seq;
+});
 
 export default mongoose.model('Product', productSchema);
