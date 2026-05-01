@@ -32,7 +32,7 @@ export const getCategoryById = async (req: Request, res: Response) => {
 
 export const createCategory = async (req: Request, res: Response) => {
   try {
-    const { category_id, category_name } = req.body;
+    const { category_name } = req.body;
 
     if (!category_name) {
       return res.status(400).json({
@@ -40,7 +40,7 @@ export const createCategory = async (req: Request, res: Response) => {
       });
     }
 
-    const category = await Category.create({ category_id, category_name });
+    const category = await Category.create({ category_name });
 
     return res.status(201).json({
       message: 'Category is created successfully!',

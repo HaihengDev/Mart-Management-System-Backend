@@ -96,8 +96,7 @@ export const createProduct = async (req: Request, res: Response) => {
     }
     const image = await uploadFile('products', file);
 
-    const { product_id, product_name, stock, discount, price, expiry_date } =
-      req.body;
+    const { product_name, stock, discount, price, expiry_date } = req.body;
     const { category_id, supplier_id } = req.body;
 
     if (!product_name || price === undefined || !expiry_date) {
