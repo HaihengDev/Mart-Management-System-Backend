@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const uri = process.env.MONGO_URI;
+const db = process.env.DB_NAME;
 
 export const connectDB = async () => {
   try {
@@ -10,7 +11,9 @@ export const connectDB = async () => {
       throw new Error('MONGO_URI is not defined in .env file');
     }
 
-    await mongoose.connect(uri);
+    await mongoose.connect(uri, {
+      dbName: db,
+    });
     console.log('MongoDB is connected!');
   } catch (err) {
     console.error('MongoDB connection failed:', err);
