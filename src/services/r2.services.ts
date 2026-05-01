@@ -1,9 +1,9 @@
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { r2 } from '../config/r2';
 
-export const uploadFile = async (file: any) => {
+export const uploadFile = async (folder: string, file: any) => {
   try {
-    const key = `products/${Date.now()}-${file.originalname}`;
+    const key = `${folder}/${Date.now()}-${file.originalname}`;
     const bucketName = process.env.R2_BUCKET;
     const publicUrl = process.env.R2_PUBLIC_URL;
 
@@ -48,9 +48,9 @@ export const deleteFile = async (key: string) => {
   }
 };
 
-export const updateFile = async (key: string, file: any) => {
+export const updateFile = async (folder: string, key: string, file: any) => {
   try {
-    const newKey = `products/${Date.now()}-${file.originalname}`;
+    const newKey = `${folder}/${Date.now()}-${file.originalname}`;
     const bucketName = process.env.R2_BUCKET;
     const publicUrl = process.env.R2_PUBLIC_URL;
 

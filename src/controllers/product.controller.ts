@@ -94,7 +94,7 @@ export const createProduct = async (req: Request, res: Response) => {
         message: 'Product image is required!',
       });
     }
-    const image = await uploadFile(file);
+    const image = await uploadFile('products', file);
 
     const { product_id, product_name, stock, discount, price, expiry_date } =
       req.body;
@@ -215,9 +215,9 @@ export const updateProduct = async (req: Request, res: Response) => {
             });
           }
 
-          image = await updateFile(key, file);
+          image = await updateFile('products', key, file);
         } else {
-          image = await uploadFile(file);
+          image = await uploadFile('products', file);
         }
       } catch (err: any) {
         return res.status(500).json({
