@@ -26,3 +26,5 @@ const employeeSchema = new Schema<IEmployee>({
     required: true,
   },
 });
+
+export default mongoose.model<IEmployee>('Employee', employeeSchema);
