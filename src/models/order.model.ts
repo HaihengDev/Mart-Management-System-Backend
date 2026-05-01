@@ -6,7 +6,7 @@ const orderSchema = new Schema<IOrder>(
   {
     order_id: { type: Number, unique: true },
     employee_id: { type: Number, required: true },
-    order_date: { type: Date, required: true },
+    order_date: { type: Date, required: true, default: Date.now },
     items: { type: [orderItemSchema], required: true },
     grand_total: Number,
     status: {

@@ -22,9 +22,8 @@ export const createOrder = async (req: Request, res: Response) => {
   try {
     session.startTransaction();
 
-    const { employee_id, order_date, status, items } = req.body as {
+    const { employee_id, status, items } = req.body as {
       employee_id: number;
-      order_date?: Date;
       status: IOrder['status'];
       items: IOrderItem[];
     };
@@ -72,7 +71,6 @@ export const createOrder = async (req: Request, res: Response) => {
 
     const order = new Order({
       employee_id,
-      order_date: order_date ? new Date(order_date) : new Date(),
       status,
       items: orderItems,
     });
