@@ -34,7 +34,7 @@ export const createCategory = async (req: Request, res: Response) => {
   try {
     const { category_id, category_name } = req.body;
 
-    if (category_id === undefined || !category_name) {
+    if (!category_name) {
       return res.status(400).json({
         message: 'category_id and category_name are required!',
       });

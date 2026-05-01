@@ -100,7 +100,7 @@ export const createProduct = async (req: Request, res: Response) => {
       req.body;
     const { category_id, supplier_id } = req.body;
 
-    if (!product_id || !product_name || price === undefined || !expiry_date) {
+    if (!product_name || price === undefined || !expiry_date) {
       return res.status(400).json({
         message: 'Product name, expiry date and price is required!',
       });
@@ -113,7 +113,6 @@ export const createProduct = async (req: Request, res: Response) => {
     }
 
     const product = await Product.create({
-      product_id,
       product_name,
       product_image: image,
       stock,
