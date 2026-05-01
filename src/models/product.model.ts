@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import Counter from './counter.model';
+import { IProduct } from '../interfaces/product.interface';
 
-const productSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema<IProduct>(
   {
     product_id: {
       type: Number,

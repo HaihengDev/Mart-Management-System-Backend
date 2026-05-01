@@ -16,4 +16,5 @@ export interface IOrder extends Document {
   order_date: Date;
   items: IOrderItem[];
   grand_total?: number;
+  status: 'Cash' | 'QR';
 }

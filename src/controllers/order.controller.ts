@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Order from '../models/order.model';
+import Product from '../models/product.model';
+import { IOrderItem, IOrder } from '../interfaces/order.interface';
 
 export const getAllOrders = async (req: Request, res: Response) => {
   try {
@@ -14,35 +16,82 @@ export const getAllOrders = async (req: Request, res: Response) => {
   }
 };
 
-export const getOrderById = async (req: Request, res: Response) => {
+export const createOrder = async (req: Request, res: Response) => {
+  const session = await mongoose.startSession();
+
   try {
-    const id = req.params.id as string;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        message: 'ObjectId of order is invalid format!',
+    session.startTransaction();
+
+    const { employee_id, order_date, status, items } = req.body as {
+      employee_id: number;
+      order_date?: Date;
+      status: IOrder['status'];
+      items: IOrderItem[];
+    };
+
+    if (!items || items.length === 0) {
+      throw new Error('Order must contain at least one product!');
+    }
+
+    if (!employee_id) {
+      throw new Error('Employee ID is required!');
+    }
+
+    if (!['Cash', 'QR'].includes(status)) {
+      throw new Error('Status must be either Cash or QR!');
+    }
+
+    const orderItems: IOrderItem[] = [];
+
+    for (const item of items) {
+      const product = await Product.findOne({
+        product_id: item.product_id,
+      }).session(session);
+
+      if (!product) {
+        throw new Error(`Product ${item.product_id} was not found!`);
+      }
+
+      if (product.stock < item.quantity) {
+        throw new Error(
+          `Product ${product.product_name} does not have enough stock!`,
+        );
+      }
+
+      product.stock -= item.quantity;
+      await product.save({ session });
+
+      orderItems.push({
+        product_id: product.product_id,
+        product_name: product.product_name,
+        price: product.price,
+        discount: item.discount ?? 0,
+        quantity: item.quantity,
       });
     }
-    const order = Order.findById(id);
 
-    if (!order) {
-      return res.status(404).json({
-        message: 'Order record is not found!',
-      });
-    }
+    const order = new Order({
+      employee_id,
+      order_date: order_date ? new Date(order_date) : new Date(),
+      status,
+      items: orderItems,
+    });
 
-    return res.status(200).json({
-      message: 'Order record is found successfully!',
+    await order.save({ session });
+    await session.commitTransaction();
+
+    return res.status(201).json({
+      message: 'Order created successfully!',
       order,
     });
   } catch (err: any) {
-    return res.status(500).json({
-      message: 'Server error',
+    await session.abortTransaction();
+
+    return res.status(400).json({
+      message: 'Create order failed!',
       result: err?.message,
     });
+  } finally {
+    session.endSession();
   }
-};
-
-export const getOrderByDate = async (req: Request, res: Response) => {
-  try {
-  } catch (err: any) {}
 };

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import orderItemSchema from './orderItem.model.js';
+import orderItemSchema from './orderItem.model';
 import { IOrder } from '../interfaces/order.interface';
 
 const orderSchema = new Schema<IOrder>(
@@ -9,6 +9,11 @@ const orderSchema = new Schema<IOrder>(
     order_date: { type: Date, required: true },
     items: { type: [orderItemSchema], required: true },
     grand_total: Number,
+    status: {
+      type: String,
+      enum: ['Cash', 'QR'],
+      required: true,
+    },
   },
   { timestamps: true, collection: 'orders' },
 );

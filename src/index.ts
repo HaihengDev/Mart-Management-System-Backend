@@ -6,6 +6,7 @@ import cors from 'cors';
 import productRouter from './routes/product.route';
 import categoryRouter from './routes/category.route';
 import supplierRouter from './routes/supplier.route';
+import orderRouter from './routes/order.route';
 import { connectDB } from './config/db';
 
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(cors());
 app.use('/api/products', productRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/suppliers', supplierRouter);
+app.use('/api/orders', orderRouter);
 const PORT = process.env.PORT || 8888;
 const server = createServer(app);
 
