@@ -227,7 +227,6 @@ export const updateProduct = async (req: Request, res: Response) => {
     }
 
     const {
-      product_id,
       product_name,
       stock,
       price,
@@ -239,7 +238,6 @@ export const updateProduct = async (req: Request, res: Response) => {
 
     const updateData: Record<string, any> = {};
 
-    if (product_id !== undefined) updateData.product_id = product_id;
     if (product_name !== undefined) updateData.product_name = product_name;
     if (stock !== undefined) updateData.stock = stock;
     if (price !== undefined) updateData.price = price;
