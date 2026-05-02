@@ -26,7 +26,16 @@ export const getCategoryById = async (req: Request, res: Response) => {
 
     const category = await Category.findById(id);
 
-    return res.status(200).json(category);
+    if (!category) {
+      return res.status(404).json({
+        message: 'Category is not found!',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Category is found successfully!',
+      data: category,
+    });
   } catch (err: any) {}
 };
 
@@ -76,7 +85,7 @@ export const updateCategory = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: 'Category is created successfully!',
-      categoryUpdated,
+      data: categoryUpdated,
     });
   } catch (err: any) {
     return res.status(500).json({

@@ -36,7 +36,7 @@ export const getEmployeeById = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: 'Employee is found successfully!',
-      employee,
+      data: employee,
     });
   } catch (err: any) {
     return res.status(500).json({
@@ -165,7 +165,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: 'Employee updated successfully!',
-      updatedEmployee,
+      data: updatedEmployee,
     });
   } catch (err: any) {
     return res.status(500).json({

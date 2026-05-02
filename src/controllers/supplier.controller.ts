@@ -14,17 +14,17 @@ export const getAllSuppliers = async (req: Request, res: Response) => {
   }
 };
 
-export const getSupplierByName = async (req: Request, res: Response) => {
+export const getSupplierById = async (req: Request, res: Response) => {
   try {
-    const { s_name } = req.query;
+    const id = req.params.id as string;
 
-    if (!s_name) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
-        message: 'Supplier name is required for search!',
+        message: 'ObjectId of supplier is invalid format!',
       });
     }
 
-    const supplier = await Supplier.findOne({ supplier_name: String(s_name) });
+    const supplier = await Supplier.findById(id);
 
     if (!supplier) {
       return res.status(404).json({
@@ -34,14 +34,9 @@ export const getSupplierByName = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: 'Supplier is found successfully!',
-      supplier,
+      data: supplier,
     });
-  } catch (err: any) {
-    return res.status(500).json({
-      message: 'Server error!',
-      result: err?.message,
-    });
-  }
+  } catch (err: any) {}
 };
 
 export async function createSupplier(req: Request, res: Response) {
@@ -132,7 +127,7 @@ export const updateSupplier = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: 'Supplier is updated successfully!',
-      updatedSupplier,
+      data: updatedSupplier,
     });
   } catch (err: any) {
     return res.status(500).json({

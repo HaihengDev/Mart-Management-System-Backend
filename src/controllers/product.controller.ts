@@ -20,7 +20,7 @@ export const getProductById = async (req: Request, res: Response) => {
   try {
     const { p_id, c_id, s_id } = req.query;
 
-    if (!p_id || !c_id || !s_id) {
+    if (!p_id && !c_id && !s_id) {
       return res.status(400).json({
         message:
           'At least one of category_id, product_id, or supplier_id is required.',
@@ -29,13 +29,21 @@ export const getProductById = async (req: Request, res: Response) => {
 
     const filter: any = {};
 
-    if (p_id) filter.product_id = Number(p_id);
-    if (c_id) filter.category_id = Number(c_id);
-    if (s_id) filter.supplier_id = Number(s_id);
+    if (p_id !== undefined && !isNaN(Number(p_id))) {
+      filter.product_id = Number(p_id);
+    }
+
+    if (c_id !== undefined && !isNaN(Number(c_id))) {
+      filter.category_id = Number(c_id);
+    }
+
+    if (s_id !== undefined && !isNaN(Number(s_id))) {
+      filter.supplier_id = Number(s_id);
+    }
 
     const products = await Product.find(filter);
 
-    if (products.length === 0) {
+    if (!products.length) {
       return res.status(404).json({
         message: 'Product is not found!',
       });
@@ -44,7 +52,7 @@ export const getProductById = async (req: Request, res: Response) => {
     return res.status(200).json({
       message: 'Product is found successfully!',
       count: products.length,
-      products,
+      data: products,
     });
   } catch (err: any) {
     return res.status(500).json({
@@ -76,7 +84,7 @@ export const viewProduct = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: 'Product found successfully',
-      product,
+      data: product,
     });
   } catch (err: any) {
     return res.status(500).json({
