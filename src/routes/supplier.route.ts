@@ -3,13 +3,13 @@ import {
   createSupplier,
   deleteSupplier,
   getAllSuppliers,
-  getSupplierByName,
+  getSupplierById,
   updateSupplier,
 } from '../controllers/supplier.controller';
 
 const router = express.Router();
 router.get('/', getAllSuppliers);
-router.get('/', getSupplierByName);
+router.get('/', getSupplierById);
 router.post('/', createSupplier);
 router.delete('/:id', deleteSupplier);
 router.put('/:id', updateSupplier);
