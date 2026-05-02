@@ -9,5 +9,7 @@ export interface IProduct {
   rating: number;
   expiry_date: Date;
   category_id: number;
+  category_name: string;
   supplier_id: number;
+  supplier_name: string;
 }
