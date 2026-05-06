@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { IUser } from '../interfaces/user.interface';
 
 export const userSchema = new mongoose.Schema<IUser>({
-  id: {
+  user_id: {
     type: Number,
   },
   username: {
@@ -19,3 +19,5 @@ export const userSchema = new mongoose.Schema<IUser>({
     required: true,
   },
 });
+
+export default mongoose.model('User', userSchema);
