@@ -14,9 +14,14 @@ import { connectDB } from './config/db';
 dotenv.config();
 
 const app = express();
+app.set('etag', false);
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors());
+app.use((_, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
 app.use('/api/products', productRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/suppliers', supplierRouter);

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import User from '../models/user.model';
+import Employee from '../models/employee.model';
 import { generateToken } from '../utils/jwt';
 
 export const login = async (req: Request, res: Response) => {
@@ -19,6 +20,8 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
+    const employee = await Employee.findOne({ employee_id: Number(user.user_id) });
+
     const token = generateToken({
       id: Number(user.user_id),
       role: String(user.role),
@@ -31,6 +34,7 @@ export const login = async (req: Request, res: Response) => {
         id: user._id,
         username: user.username,
         role: user.role,
+        employee_name: employee?.employee_name || user.username,
       },
     });
   } catch (error) {
