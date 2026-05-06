@@ -80,7 +80,7 @@ export const createEmployee = async (req: Request, res: Response) => {
       });
     }
 
-    // 👇 CREATE EMPLOYEE
+    // CREATE EMPLOYEE
     const employee = await Employee.create({
       employee_name,
       employee_image,
@@ -89,7 +89,7 @@ export const createEmployee = async (req: Request, res: Response) => {
       salary,
     });
 
-    // 👇 CREATE USER FROM EMPLOYEE
+    // CREATE USER FROM EMPLOYEE
     const username = generateUsername(employee_name);
     const password = generatePassword();
     const hashed = await hashedPassword(password);

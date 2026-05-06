@@ -20,6 +20,7 @@ router.post(
 );
 
 router.get('/', authenticate, authorizeRoles('admin'), getAllEmployees);
+
 router.get('/:id', authenticate, authorizeRoles('admin'), getEmployeeById);
 
 router.put(
