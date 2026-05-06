@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import orderItemSchema from './orderItem.model';
 import { IOrder } from '../interfaces/order.interface';
+import Counter from '../models/counter.model';
 
 const orderSchema = new Schema<IOrder>(
   {
@@ -36,6 +37,20 @@ orderSchema.pre('save', function () {
   });
 
   order.grand_total = grandTotal;
+});
+
+orderSchema.pre('save', async function () {
+  const counter = await Counter.findOneAndUpdate(
+    {
+      name: 'order_id',
+    },
+    {
+      $inc: { seq: 1 },
+    },
+    { new: true, upsert: true },
+  );
+
+  this.order_id = counter.seq;
 });
 
 export default mongoose.model<IOrder>('Order', orderSchema);
