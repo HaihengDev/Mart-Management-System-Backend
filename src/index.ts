@@ -8,6 +8,7 @@ import categoryRouter from './routes/category.route';
 import supplierRouter from './routes/supplier.route';
 import orderRouter from './routes/order.route';
 import employeeRouter from './routes/employee.route';
+import authRouter from './auth/auth.route';
 import { connectDB } from './config/db';
 
 dotenv.config();
@@ -21,6 +22,8 @@ app.use('/api/categories', categoryRouter);
 app.use('/api/suppliers', supplierRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/employees', employeeRouter);
+app.use('/api/login', authRouter);
+
 const PORT = process.env.PORT || 8888;
 const server = createServer(app);
 
